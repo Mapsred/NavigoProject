@@ -30,19 +30,11 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/login_check", name="security_login_check")
-     */
-    public function loginCheckAction()
-    {
-        // will never be executed
-    }
-
-    /**
      * @Route("/register", name="security_register")
      * @param Request $request
      * @return RedirectResponse|Response
      */
-    public function RegisterAction(Request $request)
+    public function registerAction(Request $request)
     {
         $form = $this->createForm(UserType::class);
 
@@ -50,15 +42,19 @@ class DefaultController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var User $user */
             $user = $form->getData();
+
+            $user->setPassword($this->get("security.password_encoder")->encodePassword($user, $user->getPassword()))
+            ->setRoles(['ROLE_USER'])->setApiToken($this->get("generator")->generateAPIKey());
             $userE = $this->getDoctrine()->getRepository("UserBundle:User")->findByUsernameOrCard($user->getUsername());
             if ($userE) {
                 $this->addFlash('warning', 'User already created');
 
                 return $this->redirectToRoute('homepage', []);
             }
-            if (empty($user->getCard())) {
+            if (empty($user->getCard()->getUuid())) {
                 $card = $this->getDoctrine()->getRepository("UserBundle:Card")->findOneWithNoUser();
                 $user->setCard($card);
+                $card->setUser($user);
             }else {
                 $card = $user->getCard();
                 if (!empty($card->getUser())) {
@@ -67,6 +63,10 @@ class DefaultController extends Controller
                     return $this->redirectToRoute('homepage', []);
                 }
             }
+
+            $this->getDoctrine()->getManager()->persist($user);
+            $this->getDoctrine()->getManager()->flush();
+
             $this->addFlash('success', 'User created');
 
             return $this->redirectToRoute('homepage', []);

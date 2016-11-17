@@ -21,7 +21,8 @@ class UserRepository extends EntityRepository
     {
         return $this->createQueryBuilder('u')
             ->leftJoin("u.card", "card")
-            ->andWhere('UPPER(u.username) = :username OR card.uuid = :username')
+            ->where("UPPER(u.username) = :username ")
+            ->orWhere("card.uuid = :username")
             ->setParameter('username', strtoupper($username))
             ->getQuery()
             ->getOneOrNullResult();

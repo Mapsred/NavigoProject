@@ -3,6 +3,7 @@
 namespace UserBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -16,7 +17,7 @@ class UserType extends AbstractType
     {
         $builder
             ->add('username', TextType::class, ['label' => "Pseudo"])
-            ->add('password', TextType::class, ['label' => "Mot de passe"])
+            ->add('password', PasswordType::class, ['label' => "Mot de passe"])
             ->add('card', CardType::class, ['label_attr' => ['class' => "hidden"]]);
     }
 

@@ -25,7 +25,7 @@ class User implements UserInterface
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="UserBundle\Entity\Card", mappedBy="id")
+     * @ORM\OneToOne(targetEntity="UserBundle\Entity\Card", mappedBy="user", cascade={"persist"})
      */
     private $card;
 

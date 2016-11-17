@@ -22,7 +22,7 @@ class Card
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="UserBundle\Entity\User")
+     * @ORM\OneToOne(targetEntity="UserBundle\Entity\User", inversedBy="card", cascade={"persist"})
      * @ORM\JoinColumn(name="user", referencedColumnName="id", nullable=true)
      */
     private $user;
@@ -91,6 +91,11 @@ class Card
     public function getUuid()
     {
         return $this->uuid;
+    }
+
+    public function __toString()
+    {
+        return (string)$this->uuid;
     }
 }
 

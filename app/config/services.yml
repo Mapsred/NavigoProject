@@ -11,3 +11,7 @@ services:
     app.custom_authenticator:
         class: UserBundle\Security\CustomAuthenticator
         arguments: ["@service_container"]
+
+    generator:
+        class: UserBundle\S
+

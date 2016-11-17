@@ -22,3 +22,5 @@ npm-debug.log
 /web/css
 /bower_components/
 
+/src/AppBundle/DataFixtures/Data/users.lst
+/src/AppBundle/DataFixtures/Data/cards.lst

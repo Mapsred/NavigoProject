@@ -117,3 +117,19 @@ sonata_admin:
             - bundles/sonataadmin/css/colors.css
             #Extra CSS
             - bundles/app/admin/css/sonata.css
+
+
+assetic:
+    debug:          '%kernel.debug%'
+    use_controller: '%kernel.debug%'
+    filters:
+        cssrewrite: ~
+    assets:
+        bootstrap:
+            inputs:
+                - "assets/css/bootstrap-custom.css"
+        defaults:
+            inputs:
+                - "assets/css/navbar-fixed-top.css"
+                - "assets/css/signin.css"
+                - "assets/css/helper.css"

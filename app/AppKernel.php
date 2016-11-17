@@ -20,6 +20,7 @@ class AppKernel extends Kernel
             new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
             new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
             new Knp\DoctrineBehaviors\Bundle\DoctrineBehaviorsBundle(),
+            new Symfony\Bundle\AsseticBundle\AsseticBundle(),
 
             //Paiement Bundle
             new KMJ\PayPalBridgeBundle\KMJPayPalBridgeBundle(),

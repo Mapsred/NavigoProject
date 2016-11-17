@@ -32,6 +32,8 @@
         "stof/doctrine-extensions-bundle": "^1.2",
         "beberlei/DoctrineExtensions": "^1.0",
         "knplabs/doctrine-behaviors": "~1.1",
+        "sonata-project/admin-bundle": "^3.9",
+        "sonata-project/doctrine-orm-admin-bundle": "^3.1",
         "paypal/rest-api-sdk-php": "dev-master",
         "kmj/paypalbridgebundle": "dev-master"
 

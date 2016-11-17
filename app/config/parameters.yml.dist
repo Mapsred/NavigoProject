@@ -17,3 +17,9 @@ parameters:
 
     # A secret key that's used to generate certain security-related tokens
     secret:            ThisTokenIsNotSoSecretChangeIt
+
+    #Payment parameters
+    sandbox_client_id: 1234abcd
+    sandbox_secret: 1234abcd
+    production_client_id: 1234abcd
+    production_secret: 1234abcd

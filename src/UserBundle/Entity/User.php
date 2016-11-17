@@ -25,9 +25,9 @@ class User implements UserInterface
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="UserBundle\Entity\Card", mappedBy="uuid")
+     * @ORM\OneToOne(targetEntity="UserBundle\Entity\Card", mappedBy="id")
      */
-    private $uuid;
+    private $card;
 
     /**
      * @var string
@@ -73,31 +73,7 @@ class User implements UserInterface
     {
         return $this->id;
     }
-
-    /**
-     * Set uuid
-     *
-     * @param string $uuid
-     *
-     * @return User
-     */
-    public function setUuid($uuid)
-    {
-        $this->uuid = $uuid;
-
-        return $this;
-    }
-
-    /**
-     * Get uuid
-     *
-     * @return string
-     */
-    public function getUuid()
-    {
-        return $this->uuid;
-    }
-
+    
     /**
      * Set username
      *
@@ -240,5 +216,28 @@ class User implements UserInterface
 
         return $this;
     }
-}
 
+    /**
+     * Set card
+     *
+     * @param Card $card
+     *
+     * @return User
+     */
+    public function setCard(Card $card = null)
+    {
+        $this->card = $card;
+
+        return $this;
+    }
+
+    /**
+     * Get card
+     *
+     * @return Card
+     */
+    public function getCard()
+    {
+        return $this->card;
+    }
+}

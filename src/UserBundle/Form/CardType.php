@@ -7,17 +7,16 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class UserType extends AbstractType
+class CardType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('username', TextType::class, ['label' => "Pseudo"])
-            ->add('password', TextType::class, ['label' => "Mot de passe"])
-            ->add('card', CardType::class, ['label_attr' => ['class' => "hidden"]]);
+        $builder->add('uuid', TextType::class,
+            ['label' => 'UUID Carte Navigo (laisser vide si vous n\'en avez pas)', 'required' => false]
+        );
     }
 
     /**
@@ -25,7 +24,7 @@ class UserType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(['data_class' => 'UserBundle\Entity\User']);
+        $resolver->setDefaults(['data_class' => 'UserBundle\Entity\Card']);
     }
 
     /**
@@ -33,7 +32,7 @@ class UserType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'userbundle_user';
+        return 'userbundle_card';
     }
 
 

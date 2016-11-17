@@ -50,22 +50,29 @@ class DefaultController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var User $user */
             $user = $form->getData();
-            $userE = $this->getDoctrine()->getRepository("UserBundle:User")->findByUsernameOrUUID($user->getUsername());
+            $userE = $this->getDoctrine()->getRepository("UserBundle:User")->findByUsernameOrCard($user->getUsername());
             if ($userE) {
                 $this->addFlash('warning', 'User already created');
 
                 return $this->redirectToRoute('homepage', []);
             }
-            if (empty($user->getUuid())) {
-                $uuid = $this->getDoctrine()->getRepository("UserBundle:Card")->findOneWithNoUser();
-                $user->setUuid($uuid);
+            if (empty($user->getCard())) {
+                $card = $this->getDoctrine()->getRepository("UserBundle:Card")->findOneWithNoUser();
+                $user->setCard($card);
+            }else {
+                $card = $user->getCard();
+                if (!empty($card->getUser())) {
+                    $this->addFlash('warning', 'Card already linked to a user');
+
+                    return $this->redirectToRoute('homepage', []);
+                }
             }
             $this->addFlash('success', 'User created');
 
             return $this->redirectToRoute('homepage', []);
         }
 
-        return $this->render("UserBundle:Security:register.html.twig");
+        return $this->render("UserBundle:Security:register.html.twig", ['form' => $form->createView()]);
     }
 
     /**

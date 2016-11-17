@@ -17,11 +17,11 @@ class UserRepository extends EntityRepository
      * @param $username
      * @return User|null
      */
-    public function findByUsernameOrUUID($username)
+    public function findByUsernameOrCard($username)
     {
         return $this->createQueryBuilder('u')
-            ->leftJoin("u.uuid", "uuid")
-            ->andWhere('UPPER(u.username) = :username OR uuid.uuid = :username')
+            ->leftJoin("u.card", "card")
+            ->andWhere('UPPER(u.username) = :username OR card.uuid = :username')
             ->setParameter('username', strtoupper($username))
             ->getQuery()
             ->getOneOrNullResult();

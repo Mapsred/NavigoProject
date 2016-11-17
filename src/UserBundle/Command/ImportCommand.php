@@ -32,6 +32,8 @@ class ImportCommand extends ContainerAwareCommand
         // Showing when the script is over
         $now = new \DateTime();
         $output->writeln('<comment>End : '.$now->format('d-m-Y G:i:s').' ---</comment>');
+
+        return null;
     }
 
     /**
@@ -41,7 +43,13 @@ class ImportCommand extends ContainerAwareCommand
     {
         $batchSize = 25;
         $key = 1;
-        $data = file(__DIR__."/../DataFixtures/Data/cards.lst");
+        $fileName = $this->getContainer()->get("kernel")->getCacheDir()."/cards.lst";
+        if (is_file($fileName)) {
+            $data = file($fileName);
+        }else {
+            $data = file("http://cdn.mindgame.ovh/navigo/cards.lst");
+            file_put_contents($fileName, $data);
+        }
         $size = count($data);
         $manager = $this->getContainer()->get("doctrine")->getManager();
 
@@ -68,7 +76,7 @@ class ImportCommand extends ContainerAwareCommand
 
                 $progress->advance($batchSize);
                 $now = new \DateTime();
-                $output->writeln(' of users imported ... | '.$now->format('d-m-Y G:i:s'));
+                $output->writeln(' of cards imported ... | '.$now->format('d-m-Y G:i:s'));
             }
             $key++;
         }

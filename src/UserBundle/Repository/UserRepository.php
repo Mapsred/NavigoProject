@@ -20,7 +20,8 @@ class UserRepository extends EntityRepository
     public function findByUsernameOrUUID($username)
     {
         return $this->createQueryBuilder('u')
-            ->andWhere('UPPER(u.username) = :username OR UPPER(u.uuid) = :username')
+            ->leftJoin("u.uuid", "uuid")
+            ->andWhere('UPPER(u.username) = :username OR uuid.uuid = :username')
             ->setParameter('username', strtoupper($username))
             ->getQuery()
             ->getOneOrNullResult();

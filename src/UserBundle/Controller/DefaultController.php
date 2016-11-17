@@ -4,7 +4,11 @@ namespace UserBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use UserBundle\Entity\User;
+use UserBundle\Form\UserType;
 
 class DefaultController extends Controller
 {
@@ -35,9 +39,33 @@ class DefaultController extends Controller
 
     /**
      * @Route("/register", name="security_register")
+     * @param Request $request
+     * @return RedirectResponse|Response
      */
-    public function RegisterAction()
+    public function RegisterAction(Request $request)
     {
+        $form = $this->createForm(UserType::class);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var User $user */
+            $user = $form->getData();
+            $userE = $this->getDoctrine()->getRepository("UserBundle:User")->findByUsernameOrUUID($user->getUsername());
+            if ($userE) {
+                $this->addFlash('warning', 'User already created');
+
+                return $this->redirectToRoute('homepage', []);
+            }
+            if (empty($user->getUuid())) {
+                $uuid = $this->getDoctrine()->getRepository("UserBundle:Card")->findOneWithNoUser();
+                $user->setUuid($uuid);
+            }
+            $this->addFlash('success', 'User created');
+
+            return $this->redirectToRoute('homepage', []);
+        }
+
+        return $this->render("UserBundle:Security:register.html.twig");
     }
 
     /**

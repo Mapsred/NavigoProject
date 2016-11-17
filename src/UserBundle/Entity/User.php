@@ -25,9 +25,7 @@ class User implements UserInterface
     private $id;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="uuid", type="string", length=255, unique=true)
+     * @ORM\OneToOne(targetEntity="UserBundle\Entity\Card", mappedBy="uuid")
      */
     private $uuid;
 

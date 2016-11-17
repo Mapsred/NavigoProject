@@ -1,0 +1,67 @@
+body {
+    padding-top      : 70px;
+    margin-bottom    : 60px;
+    background-color : #F7F7F7;
+}
+
+pre {
+    padding-top      : 70px;
+}
+
+html {
+    position   : relative;
+    min-height : 100%;
+}
+
+.footer {
+    position         : absolute;
+    bottom           : 0;
+    width            : 100%;
+    /* Set the fixed height of the footer here */
+    height           : 50px;
+    background-color : #272727;
+}
+
+.container .text-muted {
+    margin : 15px 0;
+}
+
+/* cookie disclaimer */
+.cookie-disclaimer {
+    border-top       : 1px #CCCCCC solid;
+    padding          : 10px 5px 0 5px;
+    text-align       : center;
+    background-color : #F7F7F7;
+    width            : 100%;
+    margin           : 0;
+    position         : absolute;
+    height           : 50px;
+    bottom           : 50px;
+}
+
+.footer-object {
+    float : right;
+}
+
+@media (max-width : 768px) {
+    .footer {
+        height : 80px;
+    }
+
+    .container .text-muted {
+        margin : 10px 0;
+    }
+
+    .cookie-disclaimer {
+        height : 90px;
+        bottom : 80px;
+    }
+
+    .footer-object {
+        float : left;
+    }
+
+    body {
+        margin-bottom : 160px;
+    }
+}

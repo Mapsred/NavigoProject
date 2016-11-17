@@ -1,0 +1,185 @@
+/* ------------------------ CSS HELPERS ------------------------ */
+
+@media (min-width: 768px) {
+    .no-padding { padding: 0 !important; }
+    .no-padding-left { padding-left: 0 !important; }
+    .no-padding-right { padding-right: 0 !important; }
+
+    .no-margin { margin: 0 !important; }
+    .no-margin-left { margin-left: 0 !important; }
+    .no-margin-right { margin-right: 0 !important; }
+}
+
+.col-center-block {
+    float: none;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.nopointer {
+    cursor: default;
+}
+
+/* ------------------------ BLOCKS ------------------------ */
+
+.box {
+    margin-bottom: 20px;
+    background: #fff;
+    padding: 20px;
+}
+
+.box h1, .box .h1, .box h2, .box .h2, .box h3, .box .h3, .box h4, .box .h4, .box h5, .box .h5, .box h6, .box .h6 {
+    margin: 0 0 15px;
+}
+
+.box h3, .box .h3 {
+    font-size: 1.6em;
+}
+
+/* ------------------------ BUTTONS ------------------------ */
+
+/*.btn:active, .btn.active {*/
+    /*-webkit-box-shadow: none;*/
+    /*box-shadow: none;*/
+/*}*/
+
+/*.btn {*/
+    /*color: #fff;*/
+    /*transition: all .25s ease;*/
+    /*padding: 6px 10px;*/
+/*}*/
+
+.btn-link, .btn-link:hover, .btn-link:focus, .btn-link:active {
+    color: #777;
+    text-decoration: none;
+}
+
+.btn-link, .btn-link:active, .btn-link[disabled], fieldset[disabled] .btn-link {
+    background-color: inherit;
+}
+
+.list-group-item-succes-info a{ color : #31708f; }
+
+.list-group-item-warning a{ color : #8a6d3b; }
+
+.list-group-item-danger a{ color : #a94442; }
+
+.btn-facebook { color: #fff; background-color: #4c66a4; }
+.btn-facebook:hover, .btn-facebook:focus, .btn-facebook:active { color: #fff; background-color: #40568a; }
+.btn-twitter { color: #fff; background-color: #55acee; }
+.btn-twitter:hover, .btn-twitter:focus, .btn-twitter:active { color: #fff; background-color: #4c99d4; }
+.btn-google { color: #fff; background-color: #d34836; }
+.btn-google:hover, .btn-google:focus, .btn-google:active { color: #fff; background-color: #ba4030; }
+
+@media (max-width: 1200px) {
+    .btn-facebook, .btn-twitter, .btn-google {
+        margin-bottom: 5px;
+    }
+}
+
+/* ------------------------ PANELS ------------------------ */
+
+.panel {
+    border-radius: 0;
+}
+
+.panel-heading {
+    border-radius: 0;
+}
+
+.panel-primary {
+    border: 0;
+}
+
+.panel-primary > .panel-heading {
+    background-color: #2D3E58;
+    border-radius: 4px 4px 0 0;
+}
+
+/* ------------------------ LABELS ------------------------ */
+
+.label {
+    padding: .2em .3em .2em;
+}
+
+.label-default { background: #FF8F32; }
+.label-primary { background: #4285F4; }
+.label-info { background: #3498db; }
+
+/* ------------------------ INPUTS ------------------------ */
+
+
+
+/* ------------------------ PAGINATION ------------------------ */
+
+.pagination {
+    margin: 0 0 20px;
+}
+
+.pagination > li > a, .pagination > li > span {
+    color: inherit;
+    border: none;
+}
+
+.pagination > li > a:hover, .pagination > li > span:hover, .pagination > li > a:focus, .pagination > li > span:focus {
+    color: inherit;
+    background: #DFE5E7;
+}
+
+.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+    background-color: #2D3E58;
+    /*border-color: #4285F4;*/
+}
+
+/* ------------------------ BREADCRUMB ------------------------ */
+
+.breadcrumb {
+    background: none;
+    margin: 0 0 10px;
+    padding-top: 0;
+    padding-bottom: 0;
+    line-height: 2em;
+    padding-left: 0;
+}
+
+.breadcrumb > li + li:before {
+    content: "\00BB";
+    color: #aaa;
+}
+
+@media (max-width: 767px) {
+    .breadcrumb {
+        padding-left: 20px;
+    }
+}
+
+.row-eq-height {
+    padding-left  : 15px;
+    padding-right : 15px;
+    float         : left;
+    width         : 100%;
+    align-items   : stretch;
+    display       : block;
+}
+
+.navbar-inverse .navbar-nav > li > a.shop-color {
+    background-color: #4285F4;
+    color: white;
+}
+
+.navbar-inverse .navbar-nav > li > a.shop-color:hover {
+    color : #9D9D9D;
+}
+
+li.list-group-item.ui-sortable-handle:hover {
+    background-color: #dddddd;
+}
+
+li.list-group-item.ui-sortable-handle {
+    min-height :42px;
+}

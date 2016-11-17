@@ -13,3 +13,6 @@ fos_js_routing:
 
 logout:
   path: /logout
+
+security_login_check:
+  path: /login_check

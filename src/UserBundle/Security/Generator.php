@@ -17,7 +17,7 @@ class Generator
      * @return string
      * @throws \Exception
      */
-    function random_str(
+    public function random_str(
         $length,
         $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
     ) {
@@ -31,5 +31,13 @@ class Generator
         }
 
         return $str;
+    }
+
+    /**
+     * @return string
+     */
+    public function generateAPIKey()
+    {
+        return md5(microtime().rand());
     }
 }

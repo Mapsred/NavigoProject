@@ -60,7 +60,7 @@ class ImportCommand extends ContainerAwareCommand
 
         $progress = new ProgressBar($output, $size);
         $progress->start();
-        $base = "INSERT INTO `card` (`uuid`, `user`) VALUES ";
+        $base = "INSERT INTO `card` (`uuid`) VALUES ";
         $request = [];
 
         foreach ($data as $card) {
@@ -74,7 +74,7 @@ class ImportCommand extends ContainerAwareCommand
 
                 continue;
             }
-            $request []= sprintf("('%s', NULL)", $card);
+            $request []= sprintf("('%s')", $card);
 
             if (($key % $batchSize) === 0) {
                 $query = $base.implode(",\n", $request);

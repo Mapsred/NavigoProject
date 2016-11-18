@@ -41,7 +41,7 @@ class UserAdmin extends AbstractAdmin
             ->add('enabled', 'checkbox', ['label' => 'Activé'])
             ->end()
             ->with("Image")
-            ->add('image','sonata_type_admin', ['delete' => false])
+            ->add('image','sonata_type_admin', ["label_attr" => ["class" => "hidden"]])
             ->end();
     }
 
@@ -62,9 +62,7 @@ class UserAdmin extends AbstractAdmin
             ->addIdentifier('username', null, ['label' => 'Nom d\'utilisateur'])
             ->add("card.uuid", null, ['label' => "UUID Navigo"])
             ->add('enabled', null, ['label' => 'Activé'])
-            ->add('created_at', 'datetime', ['label' => 'Créé le'])
-
-        ;
+            ->add('created_at', 'datetime', ['label' => 'Créé le']);
     }
 
     /**

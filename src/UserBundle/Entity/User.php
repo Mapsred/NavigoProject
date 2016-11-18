@@ -67,7 +67,7 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToOne(targetEntity="UserBundle\Entity\Image", inversedBy="user", cascade={"persist"})
-     * @ORM\JoinColumn(name="image", referencedColumnName="id")
+     * @ORM\JoinColumn(name="image", referencedColumnName="id", nullable=true)
      */
     private $image;
 
@@ -258,7 +258,7 @@ class User implements UserInterface
      */
     public function setImage(Image $image = null)
     {
-        $this->image = $image->setUser($this);
+        $this->image = $image;
 
         return $this;
     }

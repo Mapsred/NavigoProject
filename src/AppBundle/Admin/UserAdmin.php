@@ -8,6 +8,8 @@
 
 namespace AppBundle\Admin;
 
+use Sonata\DoctrineORMAdminBundle\Admin\FieldDescription;
+use UserBundle\Entity\Image;
 use UserBundle\Entity\User;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -38,6 +40,8 @@ class UserAdmin extends AbstractAdmin
             ->with("Statut", ['class' => "col-md-6"])
             ->add('enabled', 'checkbox', ['label' => 'Activé'])
             ->end()
+            ->with("Image")
+            ->add('image','sonata_type_admin', ['delete' => false])
             ->end();
     }
 
@@ -63,6 +67,53 @@ class UserAdmin extends AbstractAdmin
         ;
     }
 
+    /**
+     * @param User $object
+     */
+    public function prePersist($object)
+    {
+        $this->manageEmbeddedImageAdmins($object);
+    }
+
+    /**
+     * @param User $object
+     */
+    public function preUpdate($object)
+    {
+        $this->manageEmbeddedImageAdmins($object);
+    }
+
+    /**
+     * @param $page
+     */
+    private function manageEmbeddedImageAdmins($page)
+    {
+        // Cycle through each field
+        /** @var FieldDescription $fieldDescription */
+        foreach ($this->getFormFieldDescriptions() as $fieldName => $fieldDescription) {
+            // detect embedded Admins that manage Images
+            if ($fieldDescription->getType() === 'sonata_type_admin' &&
+                ($associationMapping = $fieldDescription->getAssociationMapping()) &&
+                $associationMapping['targetEntity'] === 'UserBundle\Entity\Image'
+            ) {
+                $getter = 'get'.$fieldName;
+                $setter = 'set'.$fieldName;
+
+                /** @var Image $image */
+                $image = $page->$getter();
+
+                if ($image) {
+                    if ($image->getFile()) {
+                        // update the Image to trigger file management
+                        $image->refreshUpdated();
+                    } elseif (!$image->getFile() && !$image->getPath()) {
+                        // prevent Sf/Sonata trying to create and persist an empty Image
+                        $page->$setter(null);
+                    }
+                }
+            }
+        }
+    }
 }
 
 

@@ -8,10 +8,20 @@ services:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
 
-    app.custom_authenticator:
-        class: UserBundle\Security\CustomAuthenticator
-        arguments: ["@service_container"]
+  app.custom_authenticator:
+      class: UserBundle\Security\CustomAuthenticator
+      arguments: ["@service_container"]
 
-    generator:
-        class: UserBundle\Security\Generator
+  generator:
+      class: UserBundle\Security\Generator
+
+      #Event Listener
+  app.doctrine_projects_listener:
+      class: UserBundle\EventListener\UploadListener
+      arguments: ["%upload_directory%"]
+      tags:
+          - { name: doctrine.event_listener, event: prePersist }
+          - { name: doctrine.event_listener, event: preUpdate }
+          - { name: doctrine.event_listener, event: postLoad }
+
 

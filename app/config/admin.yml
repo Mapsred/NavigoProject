@@ -4,11 +4,11 @@ parameters:
 #    parameter_name: value
 
 services:
-#  admin.image:
-#        class: AppBundle\Admin\ImageAdmin
-#        arguments: [~, AppBundle\Entity\Image, ~]
-#        tags:
-#            - { name: sonata.admin, manager_type: orm, label: Image, group: "Default" }
+  admin.image:
+        class: AppBundle\Admin\ImageAdmin
+        arguments: [~, UserBundle\Entity\Image, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: Image, group: "Users" }
   admin.user:
         class: AppBundle\Admin\UserAdmin
         arguments: [~, UserBundle\Entity\User, ~]

@@ -55,6 +55,8 @@ class ImportUsersCommand extends ContainerAwareCommand
         $connexion = $this->getContainer()->get("doctrine")->getConnection();
         $manager = $this->getContainer()->get("doctrine")->getManager();
 
+        $connexion->getConfiguration()->setSQLLogger(null);
+
         $progress = new ProgressBar($output, $size);
         $progress->start();
         $base = "UPDATE `card` SET `firstname`='%s', `lastname`='%s' WHERE `id` = %s";

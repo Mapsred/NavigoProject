@@ -56,12 +56,15 @@ class ImportCommand extends ContainerAwareCommand
         $connexion = $this->getContainer()->get("doctrine")->getConnection();
         $manager = $this->getContainer()->get("doctrine")->getManager();
 
+        $connexion->getConfiguration()->setSQLLogger(null);
+
         $progress = new ProgressBar($output, $size);
         $progress->start();
         $base = "INSERT INTO `card` (`uuid`, `user`) VALUES ";
         $request = [];
 
         foreach ($data as $card) {
+            $card = str_replace("\n", "", $card);
             $obj = $manager->getRepository("UserBundle:Card")->findOneBy(['uuid' => $card]);
             if ($obj) {
                 $key++;
@@ -71,7 +74,7 @@ class ImportCommand extends ContainerAwareCommand
 
                 continue;
             }
-            $request []= sprintf("('%s', NULL)", str_replace("\n", "", $card));
+            $request []= sprintf("('%s', NULL)", $card);
 
             if (($key % $batchSize) === 0) {
                 $query = $base.implode(",\n", $request);

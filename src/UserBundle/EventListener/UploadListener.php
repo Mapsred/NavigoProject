@@ -5,7 +5,6 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
-use UserBundle\Entity\Image;
 use UserBundle\Entity\User;
 
 /**
@@ -16,7 +15,7 @@ use UserBundle\Entity\User;
  */
 class UploadListener
 {
-    /** * @var string $path */
+    /** @var string $path */
     private $path;
 
     /**
@@ -51,10 +50,8 @@ class UploadListener
      */
     public function uploadFile($entity)
     {
-        // upload only works for Product entities
-
         /** @var UploadedFile $file */
-        if ($entity instanceof Image && $entity->getFile() instanceof UploadedFile) {
+        if ($entity instanceof User && $entity->getFile() instanceof UploadedFile) {
             $file = $entity->getFile();
             $fileName = $file->getClientOriginalName();
             $file->move($this->path, $fileName);
@@ -70,7 +67,7 @@ class UploadListener
     public function postLoad(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
-        if ($entity instanceof Image) {
+        if ($entity instanceof User && !empty($entity->getPath())) {
             $entity->setFile(new File($this->path.'/'.$entity->getPath()));
         }
     }

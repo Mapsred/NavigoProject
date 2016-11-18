@@ -9,7 +9,6 @@
 namespace AppBundle\Admin;
 
 use Sonata\DoctrineORMAdminBundle\Admin\FieldDescription;
-use UserBundle\Entity\Image;
 use UserBundle\Entity\User;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -32,6 +31,14 @@ class UserAdmin extends AbstractAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
+        $fileFieldOptions = ['label' => 'Image', 'required' => false];
+        $user = $this->getSubject();
+        if ($user && ($path = $user->getPath())) {
+            $container = $this->getConfigurationPool()->getContainer();
+            $fullPath = $container->get('request_stack')->getCurrentRequest()->getBasePath().'/uploads/images/'.$path;
+            $fileFieldOptions['sonata_help'] = '<img src="'.$fullPath.'" class="admin-preview" />';
+        }
+
         $formMapper
             ->tab('Utilisateur')
             ->with("Profil", ['class' => "col-md-6"])
@@ -41,8 +48,9 @@ class UserAdmin extends AbstractAdmin
             ->add('enabled', 'checkbox', ['label' => 'Activé'])
             ->end()
             ->with("Image")
-            ->add('image','sonata_type_admin', ["label_attr" => ["class" => "hidden"]])
             ->end();
+
+        $formMapper->add('file', 'file', $fileFieldOptions);
     }
 
     /**
@@ -66,51 +74,29 @@ class UserAdmin extends AbstractAdmin
     }
 
     /**
-     * @param User $object
+     * @param User $user
      */
-    public function prePersist($object)
+    public function prePersist($user)
     {
-        $this->manageEmbeddedImageAdmins($object);
+        $this->manageFileUpload($user);
     }
 
     /**
-     * @param User $object
+     * @param User $user
      */
-    public function preUpdate($object)
+    private function manageFileUpload($user)
     {
-        $this->manageEmbeddedImageAdmins($object);
-    }
-
-    /**
-     * @param $page
-     */
-    private function manageEmbeddedImageAdmins($page)
-    {
-        // Cycle through each field
-        /** @var FieldDescription $fieldDescription */
-        foreach ($this->getFormFieldDescriptions() as $fieldName => $fieldDescription) {
-            // detect embedded Admins that manage Images
-            if ($fieldDescription->getType() === 'sonata_type_admin' &&
-                ($associationMapping = $fieldDescription->getAssociationMapping()) &&
-                $associationMapping['targetEntity'] === 'UserBundle\Entity\Image'
-            ) {
-                $getter = 'get'.$fieldName;
-                $setter = 'set'.$fieldName;
-
-                /** @var Image $image */
-                $image = $page->$getter();
-
-                if ($image) {
-                    if ($image->getFile()) {
-                        // update the Image to trigger file management
-                        $image->refreshUpdated();
-                    } elseif (!$image->getFile() && !$image->getPath()) {
-                        // prevent Sf/Sonata trying to create and persist an empty Image
-                        $page->$setter(null);
-                    }
-                }
-            }
+        if ($user->getFile()) {
+            $user->setUpdatedAt(new \DateTime());
         }
+    }
+
+    /**
+     * @param User $user
+     */
+    public function preUpdate($user)
+    {
+        $this->manageFileUpload($user);
     }
 }
 

@@ -3,8 +3,10 @@
 namespace UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * User
@@ -12,7 +14,7 @@ use Knp\DoctrineBehaviors\Model as ORMBehaviors;
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="UserBundle\Repository\UserRepository")
  */
-class User implements UserInterface
+class User implements UserInterface, \Serializable
 {
     use ORMBehaviors\Timestampable\Timestampable;
     /**
@@ -66,10 +68,23 @@ class User implements UserInterface
     private $enabled = 1;
 
     /**
-     * @ORM\OneToOne(targetEntity="UserBundle\Entity\Image", inversedBy="user", cascade={"persist"})
-     * @ORM\JoinColumn(name="image", referencedColumnName="id", nullable=true)
+     * @var string
+     *
+     * @ORM\Column(type="text", length=255, nullable=true)
      */
-    private $image;
+    protected $path;
+
+    /**
+     * @var File
+     *
+     * @Assert\File(
+     *     maxSize = "10M",
+     *     mimeTypes = {"image/jpeg", "image/gif", "image/png", "image/jpg"},
+     *     maxSizeMessage = "The maximum allowed file size is 10MB.",
+     *     mimeTypesMessage = "Only the filetypes image are allowed."
+     * )
+     */
+    protected $file;
 
 
     /**
@@ -250,26 +265,75 @@ class User implements UserInterface
     }
 
     /**
-     * Set image
+     * Set path
      *
-     * @param Image $image
+     * @param string $path
      *
      * @return User
      */
-    public function setImage(Image $image = null)
+    public function setPath($path)
     {
-        $this->image = $image;
+        $this->path = $path;
 
         return $this;
     }
 
     /**
-     * Get image
+     * Get path
      *
-     * @return Image
+     * @return string
      */
-    public function getImage()
+    public function getPath()
     {
-        return $this->image;
+        return $this->path;
+    }
+
+    /**
+     * Get file
+     *
+     * @return string|File
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    /**
+     * Set file
+     *
+     * @param string $file
+     *
+     * @return User
+     */
+    public function setFile($file)
+    {
+        $this->file = $file;
+
+        return $this;
+    }
+
+    /**
+     * String representation of object
+     * @link http://php.net/manual/en/serializable.serialize.php
+     * @return string the string representation of the object or null
+     * @since 5.1.0
+     */
+    public function serialize()
+    {
+        return serialize($this->id);
+    }
+
+    /**
+     * Constructs the object
+     * @link http://php.net/manual/en/serializable.unserialize.php
+     * @param string $serialized <p>
+     * The string representation of the object.
+     * </p>
+     * @return void
+     * @since 5.1.0
+     */
+    public function unserialize($serialized)
+    {
+        $this->id = unserialize($this->id);
     }
 }

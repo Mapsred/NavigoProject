@@ -78,7 +78,6 @@ class DefaultController extends Controller
      */
     public function profileAction()
     {
-
         return $this->render("UserBundle:Default:profile.html.twig");
     }
 }

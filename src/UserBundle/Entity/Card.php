@@ -22,8 +22,7 @@ class Card
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="UserBundle\Entity\User", inversedBy="card", cascade={"persist"})
-     * @ORM\JoinColumn(name="user", referencedColumnName="id", nullable=true)
+     * @ORM\OneToOne(targetEntity="UserBundle\Entity\User", mappedBy="card", cascade={"persist"})
      */
     private $user;
 

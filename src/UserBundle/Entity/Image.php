@@ -31,8 +31,7 @@ class Image
     protected $path;
 
     /**
-     * @ORM\OneToOne(targetEntity="UserBundle\Entity\User", inversedBy="image")
-     * @ORM\JoinColumn(name="user", referencedColumnName="id")
+     * @ORM\OneToOne(targetEntity="UserBundle\Entity\User", mappedBy="image")
      */
     private $user;
 

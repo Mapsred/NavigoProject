@@ -25,7 +25,8 @@ class User implements UserInterface
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="UserBundle\Entity\Card", mappedBy="user", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="UserBundle\Entity\Card", inversedBy="user", cascade={"persist"})
+     * @ORM\JoinColumn(name="card", referencedColumnName="id", nullable=true)
      */
     private $card;
 
@@ -65,7 +66,8 @@ class User implements UserInterface
     private $enabled = 1;
 
     /**
-     * @ORM\OneToOne(targetEntity="UserBundle\Entity\Image", mappedBy="user", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="UserBundle\Entity\Image", inversedBy="user", cascade={"persist"})
+     * @ORM\JoinColumn(name="image", referencedColumnName="id")
      */
     private $image;
 

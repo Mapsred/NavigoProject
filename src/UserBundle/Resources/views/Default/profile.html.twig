@@ -1,0 +1,16 @@
+{% extends 'AppBundle:Default:index.html.twig' %}
+{% block body %}
+    <div class="container">
+    {% include "AppBundle:Parts:flashbag.html.twig" %}
+        <h1>Mon profil</h1>
+        <div class="col-md-4">
+            <div class="profile-block">
+                {{ dump(app.user.image) }}
+                <img class="img-responsive" src="{{ app.user ? app.user.image : "#" }}" alt="">
+            </div>
+
+        </div>
+        <div class="col-md-8"></div>
+
+    </div>
+{% endblock %}

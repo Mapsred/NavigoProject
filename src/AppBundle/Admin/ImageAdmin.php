@@ -8,7 +8,6 @@
 
 namespace AppBundle\Admin;
 
-use Sonata\DoctrineORMAdminBundle\Admin\FieldDescription;
 use UserBundle\Entity\Image;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Form\FormMapper;

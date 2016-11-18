@@ -21,3 +21,4 @@ npm-debug.log
 /web/assetic
 /web/css
 /bower_components/
+/web/uploads/

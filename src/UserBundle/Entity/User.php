@@ -256,7 +256,7 @@ class User implements UserInterface
      */
     public function setImage(Image $image = null)
     {
-        $this->image = $image;
+        $this->image = $image->setUser($this);
 
         return $this;
     }

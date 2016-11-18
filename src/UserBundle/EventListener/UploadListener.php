@@ -6,6 +6,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use UserBundle\Entity\Image;
+use UserBundle\Entity\User;
 
 /**
  * Created by PhpStorm.
@@ -71,6 +72,8 @@ class UploadListener
         $entity = $args->getEntity();
         if ($entity instanceof Image) {
             $entity->setFile(new File($this->path.'/'.$entity->getPath()));
+        }else if ($entity instanceof User) {
+            $entity->getImage()->setFile(new File($this->path.'/'.$entity->getImage()->getPath()));
         }
     }
 }

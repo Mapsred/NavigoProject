@@ -4,24 +4,19 @@ parameters:
 #    parameter_name: value
 
 services:
-#  admin.travel:
-#        class: AppBundle\Admin\TravelAdmin
-#        arguments: [~, AppBundle\Entity\Travel, ~]
-#        tags:
-#            - { name: sonata.admin, manager_type: orm, label: Voyage, group: "Default" }
 #  admin.image:
 #        class: AppBundle\Admin\ImageAdmin
 #        arguments: [~, AppBundle\Entity\Image, ~]
 #        tags:
 #            - { name: sonata.admin, manager_type: orm, label: Image, group: "Default" }
-#  admin.user:
-#        class: AppBundle\Admin\UserAdmin
-#        arguments: [~, UserBundle\Entity\User, ~]
-#        tags:
-#            - { name: sonata.admin, manager_type: orm, label: Utilisateurs, group: "Default" }
-#  admin.interest:
-#        class: AppBundle\Admin\InterestAdmin
-#        arguments: [~, AppBundle\Entity\Interest, ~]
-#        tags:
-#            - { name: sonata.admin, manager_type: orm, label: Intérêts, group: "Default" }
+  admin.user:
+        class: AppBundle\Admin\UserAdmin
+        arguments: [~, UserBundle\Entity\User, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: Utilisateurs, group: "Users" }
+  admin.card:
+        class: AppBundle\Admin\CardAdmin
+        arguments: [~, UserBundle\Entity\Card, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: Cartes, group: "Users" }
 

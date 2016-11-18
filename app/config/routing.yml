@@ -16,3 +16,12 @@ logout:
 
 security_login_check:
   path: /login_check
+
+admin_area:
+    resource: "@SonataAdminBundle/Resources/config/routing/sonata_admin.xml"
+    prefix: /sonata/
+
+_sonata_admin:
+    resource: .
+    type: sonata_admin
+    prefix: /sonata

@@ -34,7 +34,6 @@ class UserAdmin extends AbstractAdmin
             ->tab('Utilisateur')
             ->with("Profil", ['class' => "col-md-6"])
             ->add('username', 'text', ['label' => 'Nom d\'utilisateur'])
-            ->add('email', 'email')
             ->end()
             ->with("Statut", ['class' => "col-md-6"])
             ->add('enabled', 'checkbox', ['label' => 'Activé'])
@@ -47,7 +46,7 @@ class UserAdmin extends AbstractAdmin
      */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
-        $datagridMapper->add('username')->add('email');
+        $datagridMapper->add('username');
     }
 
     /**
@@ -57,9 +56,8 @@ class UserAdmin extends AbstractAdmin
     {
         $listMapper
             ->addIdentifier('username', null, ['label' => 'Nom d\'utilisateur'])
-            ->add('email')
+            ->add("card.uuid", null, ['label' => "UUID Navigo"])
             ->add('enabled', null, ['label' => 'Activé'])
-            ->add('locked', null, ['label' => 'Bloqué'])
             ->add('created_at', 'datetime', ['label' => 'Créé le'])
 
         ;

@@ -65,6 +65,12 @@ class User implements UserInterface
     private $enabled = 1;
 
     /**
+     * @ORM\OneToOne(targetEntity="UserBundle\Entity\Image", mappedBy="user", cascade={"persist"})
+     */
+    private $image;
+
+
+    /**
      * Get id
      *
      * @return int
@@ -239,5 +245,29 @@ class User implements UserInterface
     public function getCard()
     {
         return $this->card;
+    }
+
+    /**
+     * Set image
+     *
+     * @param Image $image
+     *
+     * @return User
+     */
+    public function setImage(Image $image = null)
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * Get image
+     *
+     * @return Image
+     */
+    public function getImage()
+    {
+        return $this->image;
     }
 }

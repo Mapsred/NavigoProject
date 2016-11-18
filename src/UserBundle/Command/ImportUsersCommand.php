@@ -8,12 +8,13 @@ use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use UserBundle\Entity\Card;
+use UserBundle\Repository\CardRepository;
 
-class ImportCommand extends ContainerAwareCommand
+class ImportUsersCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
-        $this->setName('import:file')->setDescription('Import file');
+        $this->setName('import:user_file')->setDescription('Import user file');
     }
 
     /**
@@ -42,13 +43,11 @@ class ImportCommand extends ContainerAwareCommand
      */
     protected function import(OutputInterface $output)
     {
-        $batchSize = 10;
-        $key = 1;
-        $fileName = $this->getContainer()->get("kernel")->getCacheDir()."/cards.lst";
+        $fileName = $this->getContainer()->get("kernel")->getCacheDir()."/users.lst";
         if (is_file($fileName)) {
             $data = file($fileName);
         } else {
-            $data = file("http://cdn.mindgame.ovh/navigo/cards.lst");
+            $data = file("http://cdn.mindgame.ovh/navigo/users.lst");
             file_put_contents($fileName, $data);
         }
         $size = count($data);
@@ -58,30 +57,24 @@ class ImportCommand extends ContainerAwareCommand
 
         $progress = new ProgressBar($output, $size);
         $progress->start();
-        $base = "INSERT INTO `card` (`uuid`, `user`) VALUES ";
-        $request = [];
+        $base = "UPDATE `card` SET `firstname`='%s', `lastname`='%s' WHERE `id` = %s";
 
-        foreach ($data as $card) {
-            $obj = $manager->getRepository("UserBundle:Card")->findOneBy(['uuid' => $card]);
+        foreach ($data as $user) {
+            $user = str_replace("\n", "", $user);
+            $user = explode(" ", $user);
+            $obj = $manager->getRepository("UserBundle:Card")
+                ->findOneBy(['firstname' => $user[1], 'lastname' => $user[0]]);
             if ($obj) {
-                $key++;
-                if (($key % $batchSize) === 0) {
-                    $progress->advance($batchSize);
-                }
+                $progress->advance();
 
                 continue;
             }
-            $request []= sprintf("('%s', NULL)", str_replace("\n", "", $card));
-
-            if (($key % $batchSize) === 0) {
-                $query = $base.implode(",\n", $request);
-                $connexion->executeQuery($query);
-                $request = [];
-                $progress->advance($batchSize);
-                $now = new \DateTime();
-                $output->writeln(' of cards imported ... | '.$now->format('d-m-Y G:i:s'));
-            }
-            $key++;
+            /** @var CardRepository $repo */
+            $repo = $manager->getRepository("UserBundle:Card");
+            $card = $repo->findOneWithNoUser();
+            $request = sprintf($base, $user[1], $user[0],$card->getId());
+            $connexion->executeQuery($request);
+            $progress->advance();
         }
         // Ending the progress bar process
         $progress->finish();

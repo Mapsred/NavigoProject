@@ -34,6 +34,19 @@ class Card
      */
     private $uuid;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="firstname", type="string", length=255)
+     */
+    private $firstname;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="lastname", type="string", length=255)
+     */
+    private $lastname;
 
     /**
      * Get id
@@ -97,5 +110,52 @@ class Card
     {
         return (string)$this->uuid;
     }
-}
 
+    /**
+     * Set firstname
+     *
+     * @param string $firstname
+     *
+     * @return Card
+     */
+    public function setFirstname($firstname)
+    {
+        $this->firstname = $firstname;
+
+        return $this;
+    }
+
+    /**
+     * Get firstname
+     *
+     * @return string
+     */
+    public function getFirstname()
+    {
+        return $this->firstname;
+    }
+
+    /**
+     * Set lastname
+     *
+     * @param string $lastname
+     *
+     * @return Card
+     */
+    public function setLastname($lastname)
+    {
+        $this->lastname = $lastname;
+
+        return $this;
+    }
+
+    /**
+     * Get lastname
+     *
+     * @return string
+     */
+    public function getLastname()
+    {
+        return $this->lastname;
+    }
+}

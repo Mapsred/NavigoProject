@@ -18,6 +18,6 @@ class CardRepository extends EntityRepository
      */
     public function findOneWithNoUser()
     {
-        return $this->findOneBy(['user' => null]);
+        return $this->findOneBy(['lastname' => '']);
     }
 }

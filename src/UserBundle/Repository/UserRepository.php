@@ -27,4 +27,18 @@ class UserRepository extends EntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * @param $uuid
+     * @return User|object|null
+     */
+    public function findOneByCardUUID($uuid)
+    {
+        return $this->createQueryBuilder('u')
+            ->leftJoin("u.card", "card")
+            ->where("card.uuid = :uuid")
+            ->setParameter('uuid', $uuid)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

@@ -15,7 +15,7 @@ class CardType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('uuid', TextType::class,
-            ['label' => 'UUID Carte Navigo (laisser vide si vous n\'en avez pas)', 'required' => false]
+            ['label' => 'UUID Carte Navigo (nécessaire à la création de votre compte)', 'required' => true]
         );
     }
 

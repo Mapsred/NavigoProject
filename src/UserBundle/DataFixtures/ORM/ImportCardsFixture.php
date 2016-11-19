@@ -10,12 +10,13 @@ namespace UserBundle\DataFixtures\ORM;
 
 
 use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class ImportCardsFixture implements FixtureInterface, ContainerAwareInterface
+class ImportCardsFixture implements FixtureInterface, ContainerAwareInterface, OrderedFixtureInterface
 {
     /** @var ContainerInterface */
     private $container;
@@ -31,6 +32,7 @@ class ImportCardsFixture implements FixtureInterface, ContainerAwareInterface
         $connexion = $this->getContainer()->get("doctrine")->getConnection();
         $connexion->getConfiguration()->setSQLLogger(null);
 
+        mkdir($this->getContainer()->get("kernel")->getCacheDir()."/fixture_data");
         $tempFile = $this->getContainer()->get("kernel")->getCacheDir()."/fixture_data/cards.sql";
         if (!is_file($tempFile)) {
             $fileName = $this->getContainer()->get("kernel")->getCacheDir()."/fixture_data/cards.lst";
@@ -81,5 +83,15 @@ class ImportCardsFixture implements FixtureInterface, ContainerAwareInterface
     public function setContainer(ContainerInterface $container = null)
     {
         $this->container = $container;
+    }
+
+    /**
+     * Get the order of this fixture
+     *
+     * @return integer
+     */
+    public function getOrder()
+    {
+        return 1;
     }
 }

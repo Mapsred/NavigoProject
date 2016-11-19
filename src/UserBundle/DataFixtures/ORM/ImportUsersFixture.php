@@ -32,8 +32,9 @@ class ImportUsersFixture implements FixtureInterface, ContainerAwareInterface, O
         /** @var Connection $connexion */
         $connexion = $this->getContainer()->get("doctrine")->getConnection();
         $connexion->getConfiguration()->setSQLLogger(null);
-
-        mkdir($this->getContainer()->get("kernel")->getCacheDir()."/fixture_data");
+        if (!is_dir($fixtureDir = $this->getContainer()->get("kernel")->getCacheDir()."/fixture_data")) {
+            mkdir($fixtureDir);
+        }
         $tempFile = $this->getContainer()->get("kernel")->getCacheDir()."/fixture_data/users.sql";
         if (!is_file($tempFile)) {
             $fileName = $this->getContainer()->get("kernel")->getCacheDir()."/fixture_data/users.lst";

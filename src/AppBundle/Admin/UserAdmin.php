@@ -40,15 +40,13 @@ class UserAdmin extends AbstractAdmin
         }
 
         $formMapper
-            ->tab('Utilisateur')
             ->with("Profil", ['class' => "col-md-6"])
             ->add('username', 'text', ['label' => 'Nom d\'utilisateur'])
             ->end()
             ->with("Statut", ['class' => "col-md-6"])
             ->add('enabled', 'checkbox', ['label' => 'Activé'])
             ->end()
-            ->with("Image")
-            ->end();
+            ->with("Image");
 
         $formMapper->add('file', 'file', $fileFieldOptions);
     }

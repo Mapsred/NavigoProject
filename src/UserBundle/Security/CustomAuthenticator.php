@@ -73,9 +73,6 @@ class CustomAuthenticator extends AbstractGuardAuthenticator
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         $user = $this->em->getRepository('UserBundle:User')->findByUsernameOrCard($credentials['username']);
-        if (!$user) {
-            return false;
-        }
 
         return $user;
     }

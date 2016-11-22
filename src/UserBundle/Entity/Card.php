@@ -47,6 +47,22 @@ class Card
      */
     private $lastname;
 
+
+    /**
+     * @var \DateTime $expiratedAt
+     *
+     * @ORM\Column(type="datetime", name="expirated_at")
+     */
+    private $expiratedAt;
+
+    /**
+     * Card constructor.
+     */
+    public function __construct()
+    {
+        $this->expiratedAt = (new \DateTime())->add(new \DateInterval("2M"));
+    }
+
     /**
      * Get id
      *
@@ -156,5 +172,29 @@ class Card
     public function getLastname()
     {
         return $this->lastname;
+    }
+
+    /**
+     * Set expiratedAt
+     *
+     * @param \DateTime $expiratedAt
+     *
+     * @return Card
+     */
+    public function setExpiratedAt($expiratedAt)
+    {
+        $this->expiratedAt = $expiratedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get expiratedAt
+     *
+     * @return \DateTime
+     */
+    public function getExpiratedAt()
+    {
+        return $this->expiratedAt;
     }
 }

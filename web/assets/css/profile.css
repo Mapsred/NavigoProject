@@ -1,0 +1,17 @@
+.profile-pic {
+    position    : relative;
+    width       : 90px;
+    margin-left : 227px;
+    margin-top  : 30px;
+    height      : 105px;
+}
+
+.col-cover, .cover {
+    height          : 200px;
+}
+
+.cover {
+    position        : absolute;
+    background      : url("../images/navigo.jpg") no-repeat;
+    background-size : auto 190px;
+}

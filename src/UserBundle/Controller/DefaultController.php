@@ -8,8 +8,14 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use UserBundle\Entity\User;
+use UserBundle\Form\UserFileForm;
 use UserBundle\Form\UserType;
 
+/**
+ * Class DefaultController
+ * @package UserBundle\Controller
+ * @method User getUser()
+ */
 class DefaultController extends Controller
 {
     /**
@@ -75,9 +81,23 @@ class DefaultController extends Controller
 
     /**
      * @Route("/profile", name="profile")
+     * @param Request $request
+     * @return RedirectResponse|Response
      */
-    public function profileAction()
+    public function profileAction(Request $request)
     {
-        return $this->render("UserBundle:Default:profile.html.twig");
+        $form = $this->createForm(UserFileForm::class, $this->getUser());
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->persist($this->getUser());
+            $this->getDoctrine()->getManager()->flush();
+
+            $this->addFlash('success', 'Image de profil ajoutée');
+
+            return $this->redirectToRoute('profile');
+        }
+
+        return $this->render("UserBundle:Default:profile.html.twig", ['form' => $form->createView()]);
     }
 }

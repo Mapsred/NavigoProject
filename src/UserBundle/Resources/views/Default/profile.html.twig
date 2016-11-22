@@ -1,14 +1,29 @@
 {% extends 'AppBundle:Default:index.html.twig' %}
 {% block body %}
+    {% stylesheets 'assets/css/profile.css' filter='cssrewrite' %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
     <div class="container">
-    {% include "AppBundle:Parts:flashbag.html.twig" %}
+        {% include "AppBundle:Parts:flashbag.html.twig" %}
         <h1>Mon profil</h1>
         <div class="col-md-4">
-            <div class="profile-block">
-                {% set img = "uploads/images/"~ app.user.file.filename %}
-                <img class="img-responsive" src="{{ asset(img) }}" alt="{{ app.user.username }}">
+            <div class="profile-block col-cover">
+                {% if app.user.file %}
+                    {% set img = "uploads/images/"~ app.user.file.filename %}
+                    <div class="cover col-md-12"></div>
+                    <img class="profile-pic" src="{{ asset(img) }}" alt="{{ app.user.username }}">
+                    {% else %}
+                    {{ form_start(form) }}
+                    <div class="form-group">
+                        {{ form_row(form.file) }}
+                        <input type="submit" class="form-control" name="Ajouter l'image">
+                    </div>
+                    {{ form_end(form) }}
 
+                {% endif %}
             </div>
+            <p>Date de fin de validité de la carte : <br>{{ app.user.card.expiratedAt|date("d/m/Y H:m:s") }}</p>
+
 
         </div>
         <div class="col-md-8"></div>

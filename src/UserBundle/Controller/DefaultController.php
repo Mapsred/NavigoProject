@@ -2,8 +2,23 @@
 
 namespace UserBundle\Controller;
 
+require __DIR__.'/../../../vendor/paypal/rest-api-sdk-php/sample/common.php';
+
+
+use PayPal\Api\Amount;
+use PayPal\Api\Details;
+use PayPal\Api\Item;
+use PayPal\Api\ItemList;
+use PayPal\Api\Payer;
+use PayPal\Api\Payment;
+use PayPal\Api\PaymentExecution;
+use PayPal\Api\RedirectUrls;
+use PayPal\Api\Transaction;
+use PayPal\Exception\PayPalConnectionException;
+use ResultPrinter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -98,6 +113,98 @@ class DefaultController extends Controller
             return $this->redirectToRoute('profile');
         }
 
-        return $this->render("UserBundle:Default:profile.html.twig", ['form' => $form->createView()]);
+        $twigArray = [
+            'form' => $form->createView(),
+            "expired" => new \DateTime() > $this->getUser()->getCard()->getExpiratedAt(),
+        ];
+
+        return $this->render("UserBundle:Default:profile.html.twig", $twigArray);
     }
+
+    /**
+     * @Route("/renouveller", name="card_renew")
+     * @return RedirectResponse|Response
+     */
+    public function renewCardAction()
+    {
+        $payer = new Payer();
+        $payer->setPaymentMethod("paypal");
+
+        $item = new Item();
+        $sku = $this->getUser()->getCard()->getUuid();
+        $item->setName("Renouvellement Navigo")->setDescription("Renouvellement Navigo 2 mois")->setQuantity(1)
+            ->setPrice(20)->setSku($sku)->setCurrency("EUR");
+        $itemList = new ItemList();
+        $itemList->setItems([$item]);
+
+        $details = new Details();
+        $details->setSubtotal(doubleval($item->getPrice()));
+
+        $amount = new Amount();
+        $amount->setCurrency($item->getCurrency())->setTotal($details->getSubtotal());
+
+        $transaction = new Transaction();
+        $transaction->setAmount($amount)->setItemList($itemList)->setDescription("Payment description")
+            ->setInvoiceNumber(uniqid());
+
+        $baseUrl = getBaseUrl()."/renouveller/completing?success";
+        $redirectUrls = new RedirectUrls();
+        $redirectUrls->setReturnUrl("$baseUrl=true")->setCancelUrl("$baseUrl=false");
+
+        $payment = new Payment();
+        $payment->setIntent("sale")->setPayer($payer)->setRedirectUrls($redirectUrls)->setTransactions([$transaction]);
+
+        #May launch an Exception on failure
+        $payment->create($this->get("paypal")->getApiContext());
+        $approvalUrl = $payment->getApprovalLink();
+
+        return $this->redirect($approvalUrl);
+    }
+
+    /**
+     * @Route("/renouveller/completing", name="payment_completing")
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function paymentCompletingAction(Request $request)
+    {
+        if ($request->query->has("success") && $request->query->get("success") == 'true') {
+            $paymentId = $request->query->get("paymentId");
+            $payment = Payment::get($paymentId, $this->get("paypal")->getApiContext());
+            $transaction = $payment->getTransactions()[0];
+            $item = $transaction->getItemList()->getItems()[0];
+            $travel = $this->getDoctrine()->getRepository("UserBundle:User")->findOneBy(['card.uuid' => $item->getSku()]);
+
+            $order = $this->getDoctrine()->getRepository("AppBundle:Order")
+                ->findOneBy(['user' => $this->getUser(), 'travel' => $travel]);
+            $order->setUuid($paymentId)->setDone(true);
+
+            $execution = new PaymentExecution();
+            $execution->setPayerId($request->query->get("PayerID"));
+            $execution->addTransaction($transaction);
+
+            try {
+                $result = $payment->execute($execution, $this->get("paypal")->getApiContext());
+                ResultPrinter::printResult("Executed Payment", "Payment", $payment->getId(), $execution, $result);
+
+                try {
+                    $payment = Payment::get($paymentId, $this->get("paypal")->getApiContext());
+                } catch (\Exception $ex) {
+                    ResultPrinter::printError("Get Payment", "Payment", null, null, $ex);
+                    exit(1);
+                }
+            } catch (\Exception $ex) {
+                ResultPrinter::printError("Executed Payment", "Payment", null, null, $ex);
+                exit(1);
+            }
+
+            ResultPrinter::printResult("Get Payment", "Payment", $payment->getId(), null, $payment);
+
+            return new JsonResponse(['content' => $payment]);
+        }else {
+            ResultPrinter::printResult("User Cancelled the Approval", null);
+            exit;
+        }
+    }
+
 }

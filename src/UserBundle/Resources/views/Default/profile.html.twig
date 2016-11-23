@@ -12,7 +12,7 @@
                     {% set img = "uploads/images/"~ app.user.file.filename %}
                     <div class="cover col-md-12"></div>
                     <img class="profile-pic" src="{{ asset(img) }}" alt="{{ app.user.username }}">
-                    {% else %}
+                {% else %}
                     {{ form_start(form) }}
                     <div class="form-group">
                         {{ form_row(form.file) }}
@@ -22,11 +22,22 @@
 
                 {% endif %}
             </div>
-            <p>Date de fin de validité de la carte : <br>{{ app.user.card.expiratedAt|date("d/m/Y H:m:s") }}</p>
+        </div>
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="">Date de fin de validité de la carte </label>
+                <div class="form-control">{{ app.user.card.expiratedAt|date("d/m/Y H:m:s") }}</div>
+            </div>
 
+            {% if expired %}
+                <a href="#" class="btn btn-warning">Votre abonnement a expiré, pensez à renouveller</a>
+            {% endif %}
+            <div class="form-group">
+                <label for="">UUID Carte Navigo </label>
+                <div class="form-control">{{ app.user.card.uuid }}</div>
+            </div>
 
         </div>
-        <div class="col-md-8"></div>
 
     </div>
 {% endblock %}

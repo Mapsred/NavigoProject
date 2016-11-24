@@ -5,6 +5,7 @@ namespace UserBundle\Controller;
 require __DIR__.'/../../../vendor/paypal/rest-api-sdk-php/sample/common.php';
 
 
+use AppBundle\Entity\Order;
 use PayPal\Api\Amount;
 use PayPal\Api\Details;
 use PayPal\Api\Item;
@@ -164,7 +165,7 @@ class DefaultController extends Controller
     /**
      * @Route("/renouveller/completing", name="payment_completing")
      * @param Request $request
-     * @return JsonResponse
+     * @return RedirectResponse
      */
     public function paymentCompletingAction(Request $request)
     {
@@ -172,39 +173,31 @@ class DefaultController extends Controller
             $paymentId = $request->query->get("paymentId");
             $payment = Payment::get($paymentId, $this->get("paypal")->getApiContext());
             $transaction = $payment->getTransactions()[0];
-            $item = $transaction->getItemList()->getItems()[0];
-            $travel = $this->getDoctrine()->getRepository("UserBundle:User")->findOneBy(['card.uuid' => $item->getSku()]);
 
-            $order = $this->getDoctrine()->getRepository("AppBundle:Order")
-                ->findOneBy(['user' => $this->getUser(), 'travel' => $travel]);
-            $order->setUuid($paymentId)->setDone(true);
+            $order = new Order();
+            $order->setUser($this->getUser())->setAmount($transaction->getAmount())->setDone(false)
+                ->setUuid($paymentId)->setDone(true);
 
             $execution = new PaymentExecution();
-            $execution->setPayerId($request->query->get("PayerID"));
-            $execution->addTransaction($transaction);
+            $execution->setPayerId($request->query->get("PayerID"))->addTransaction($transaction);
+            $card = $this->getUser()->getCard();
+            $card->setExpiratedAt($card->getExpiratedAt()->add(new \DateInterval("P2M")));
+
+            $this->getDoctrine()->getManager()->persist($card);
+            $this->getDoctrine()->getManager()->persist($order);
+            $this->getDoctrine()->getManager()->flush();
 
             try {
-                $result = $payment->execute($execution, $this->get("paypal")->getApiContext());
-                ResultPrinter::printResult("Executed Payment", "Payment", $payment->getId(), $execution, $result);
-
-                try {
-                    $payment = Payment::get($paymentId, $this->get("paypal")->getApiContext());
-                } catch (\Exception $ex) {
-                    ResultPrinter::printError("Get Payment", "Payment", null, null, $ex);
-                    exit(1);
-                }
+                $this->addFlash("success", "Paiement réussi");
             } catch (\Exception $ex) {
-                ResultPrinter::printError("Executed Payment", "Payment", null, null, $ex);
-                exit(1);
+                $this->addFlash("danger", "Paiement échoué. Veuillez retenter plus tard");
             }
 
-            ResultPrinter::printResult("Get Payment", "Payment", $payment->getId(), null, $payment);
-
-            return new JsonResponse(['content' => $payment]);
-        }else {
-            ResultPrinter::printResult("User Cancelled the Approval", null);
-            exit;
+        } else {
+            $this->addFlash("warning", "Paiement annulé");
         }
+
+        return $this->redirectToRoute("profile");
     }
 
 }

@@ -60,7 +60,7 @@ class Card
      */
     public function __construct()
     {
-        $this->expiratedAt = (new \DateTime())->add(new \DateInterval("2M"));
+        $this->expiratedAt = (new \DateTime())->add(new \DateInterval("P2M"));
     }
 
     /**

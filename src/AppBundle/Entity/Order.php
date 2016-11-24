@@ -15,7 +15,7 @@ use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 /**
  * Order
  *
- * @ORM\Table()
+ * @ORM\Table(name="orders")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\OrderRepository")
  */
 class Order

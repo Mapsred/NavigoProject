@@ -4,7 +4,6 @@ namespace UserBundle\Controller;
 
 require __DIR__.'/../../../vendor/paypal/rest-api-sdk-php/sample/common.php';
 
-
 use AppBundle\Entity\Order;
 use PayPal\Api\Amount;
 use PayPal\Api\Details;
@@ -175,8 +174,8 @@ class DefaultController extends Controller
             $transaction = $payment->getTransactions()[0];
 
             $order = new Order();
-            $order->setUser($this->getUser())->setAmount($transaction->getAmount())->setDone(false)
-                ->setUuid($paymentId)->setDone(true);
+            $order->setUser($this->getUser())->setAmount($transaction->getAmount()->getTotal())
+                ->setDone(false)->setUuid($paymentId)->setDone(true);
 
             $execution = new PaymentExecution();
             $execution->setPayerId($request->query->get("PayerID"))->addTransaction($transaction);

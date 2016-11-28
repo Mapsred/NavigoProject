@@ -14,11 +14,8 @@ use PayPal\Api\Payment;
 use PayPal\Api\PaymentExecution;
 use PayPal\Api\RedirectUrls;
 use PayPal\Api\Transaction;
-use PayPal\Exception\PayPalConnectionException;
-use ResultPrinter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -101,13 +98,14 @@ class DefaultController extends Controller
      */
     public function profileAction(Request $request)
     {
-        $form = $this->createForm(UserFileForm::class, $this->getUser());
-
+        $user = $this->getUser();
+        $form = $this->createForm(UserFileForm::class, $user);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->persist($this->getUser());
-            $this->getDoctrine()->getManager()->flush();
 
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user->setUpdatedAt(new \DateTime());
+            $this->getDoctrine()->getManager()->persist($user);
+            $this->getDoctrine()->getManager()->flush();
             $this->addFlash('success', 'Image de profil ajoutée');
 
             return $this->redirectToRoute('profile');

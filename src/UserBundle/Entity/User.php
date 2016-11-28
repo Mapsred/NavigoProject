@@ -2,6 +2,8 @@
 
 namespace UserBundle\Entity;
 
+use AppBundle\Entity\Order;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -86,6 +88,19 @@ class User implements UserInterface, \Serializable
      */
     protected $file;
 
+    /**
+     * @var ArrayCollection $orders
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Order", mappedBy="user", cascade={"persist"})
+     */
+    private $orders;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->orders = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -335,5 +350,39 @@ class User implements UserInterface, \Serializable
     public function unserialize($serialized)
     {
         $this->id = unserialize($this->id);
+    }
+
+    /**
+     * Add order
+     *
+     * @param Order $order
+     *
+     * @return User
+     */
+    public function addOrder(Order $order)
+    {
+        $this->orders[] = $order;
+
+        return $this;
+    }
+
+    /**
+     * Remove order
+     *
+     * @param Order $order
+     */
+    public function removeOrder(Order $order)
+    {
+        $this->orders->removeElement($order);
+    }
+
+    /**
+     * Get orders
+     *
+     * @return ArrayCollection|Order[]
+     */
+    public function getOrders()
+    {
+        return $this->orders;
     }
 }

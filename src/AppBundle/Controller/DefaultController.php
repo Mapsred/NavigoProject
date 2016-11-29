@@ -26,7 +26,6 @@ class DefaultController extends Controller
      * @Route("/card", name="card_route")
      * @param Request $request
      * @return Response
-     * @internal param null $uuid
      */
     public function checkValidAction(Request $request)
     {
@@ -36,6 +35,6 @@ class DefaultController extends Controller
         }
 
 
-        return $this->render("AppBundle:Default:card.html.twig", ['uuid' => isset($uuid) ? $uuid : null]);
+        return $this->render("AppBundle:Default:card.html.twig", ['uuid' => isset($card) ? $card : null]);
     }
 }

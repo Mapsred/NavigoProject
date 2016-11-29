@@ -5,6 +5,7 @@ namespace UserBundle\Controller;
 require __DIR__.'/../../../vendor/paypal/rest-api-sdk-php/sample/common.php';
 
 use AppBundle\Entity\Order;
+use AppBundle\Utils\Paypal;
 use PayPal\Api\Amount;
 use PayPal\Api\Details;
 use PayPal\Api\Item;
@@ -125,36 +126,11 @@ class DefaultController extends Controller
      */
     public function renewCardAction()
     {
-        $payer = new Payer();
-        $payer->setPaymentMethod("paypal");
-
-        $item = new Item();
-        $sku = $this->getUser()->getCard()->getUuid();
-        $item->setName("Renouvellement Navigo")->setDescription("Renouvellement Navigo 2 mois")->setQuantity(1)
-            ->setPrice(20)->setSku($sku)->setCurrency("EUR");
-        $itemList = new ItemList();
-        $itemList->setItems([$item]);
-
-        $details = new Details();
-        $details->setSubtotal(doubleval($item->getPrice()));
-
-        $amount = new Amount();
-        $amount->setCurrency($item->getCurrency())->setTotal($details->getSubtotal());
-
-        $transaction = new Transaction();
-        $transaction->setAmount($amount)->setItemList($itemList)->setDescription("Payment description")
-            ->setInvoiceNumber(uniqid());
-
+        $paypal = new Paypal();
         $baseUrl = getBaseUrl()."/renouveller/completing?success";
         $redirectUrls = new RedirectUrls();
         $redirectUrls->setReturnUrl("$baseUrl=true")->setCancelUrl("$baseUrl=false");
-
-        $payment = new Payment();
-        $payment->setIntent("sale")->setPayer($payer)->setRedirectUrls($redirectUrls)->setTransactions([$transaction]);
-
-        #May launch an Exception on failure
-        $payment->create($this->get("paypal")->getApiContext());
-        $approvalUrl = $payment->getApprovalLink();
+        $approvalUrl = $paypal->renew($this->getUser(), $this->get("paypal")->getApiContext(), $redirectUrls);
 
         return $this->redirect($approvalUrl);
     }

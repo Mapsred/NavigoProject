@@ -2,10 +2,10 @@
 {% block title %}Vérification par UUID{% endblock %}
 {% block body %}
     <div class="container">
-        {% if uuid %}
+        {% if card %}
             <div class="form-group">
                 <label for="">Date de fin de validité de la carte </label>
-                <div class="form-control">{{ app.user.card.expiratedAt|date("d/m/Y H:m:s") }}</div>
+                <div class="form-control">{{ card.expiratedAt|date("d/m/Y H:m:s") }}</div>
             </div>
         {% else %}
             <form action="{{ path("card_route") }}" method="get">

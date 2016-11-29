@@ -12,6 +12,10 @@ services:
       class: UserBundle\Security\CustomAuthenticator
       arguments: ["@service_container"]
 
+  api:
+      class: AppBundle\Utils\Api
+      arguments: ["@service_container"]
+
   generator:
       class: UserBundle\Security\Generator
 

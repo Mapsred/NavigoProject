@@ -23,15 +23,19 @@ class DefaultController extends Controller
 
 
     /**
-     * @Route("/card/{uuid}", name="card_route")
-     * @param null $uuid
+     * @Route("/card", name="card_route")
+     * @param Request $request
+     * @return Response
+     * @internal param null $uuid
      */
-    public function checkValidAction($uuid = null)
+    public function checkValidAction(Request $request)
     {
-        if ($uuid) {
+        if ($request->query->has("uuid")) {
+            $uuid = $request->query->get("uuid");
             $card = $this->getDoctrine()->getRepository("UserBundle:Card")->findOneBy(['uuid' => $uuid]);
         }
 
 
+        return $this->render("AppBundle:Default:card.html.twig", ['uuid' => isset($uuid) ? $uuid : null]);
     }
 }

@@ -85,6 +85,18 @@ class ApiController extends Controller
         return new JsonResponse($result);
     }
 
+    /**
+     * @Route("/card/validation/{apiKey}", name="api_get_card_validation")
+     * @param $apiKey
+     * @return JsonResponse
+     */
+    public function getCardValidationAction($apiKey)
+    {
+        $card = $this->getApi($apiKey)->getUser()->getCard();
+        $expired = new \DateTime() > $card->getExpiratedAt();
+
+        return new JsonResponse(['card expiration date' => $card->getExpiratedAt()->format(DATE_ATOM), "expired" => $expired]);
+    }
 
     /**
      * @param $apiKey

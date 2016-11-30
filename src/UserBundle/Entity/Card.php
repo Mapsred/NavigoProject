@@ -197,4 +197,12 @@ class Card
     {
         return $this->expiratedAt;
     }
+
+    /**
+     * @return bool
+     */
+    public function isExpired()
+    {
+        return new \DateTime() > $this->getExpiratedAt();
+    }
 }

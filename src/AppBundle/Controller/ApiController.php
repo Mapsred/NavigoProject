@@ -93,9 +93,20 @@ class ApiController extends Controller
     public function getCardValidationAction($apiKey)
     {
         $card = $this->getApi($apiKey)->getUser()->getCard();
-        $expired = new \DateTime() > $card->getExpiratedAt();
+        $expired = $card->isExpired();
 
         return new JsonResponse(['card expiration date' => $card->getExpiratedAt()->format(DATE_ATOM), "expired" => $expired]);
+    }
+
+    /**
+     * @param $uuid
+     * @return JsonResponse
+     */
+    public function getValidationAction($uuid)
+    {
+        $card = $this->getDoctrine()->getRepository("UserBundle:Card")->findOneBy(['uuid' => $uuid]);
+
+        return new JsonResponse(['expired' => $card->isExpired()]);
     }
 
     /**

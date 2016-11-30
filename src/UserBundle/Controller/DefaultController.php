@@ -126,11 +126,11 @@ class DefaultController extends Controller
      */
     public function renewCardAction()
     {
-        $paypal = new Paypal();
+        $paypal = new Paypal($this->getDoctrine()->getManager(), $this->getUser());
         $baseUrl = getBaseUrl()."/renouveller/completing?success";
         $redirectUrls = new RedirectUrls();
         $redirectUrls->setReturnUrl("$baseUrl=true")->setCancelUrl("$baseUrl=false");
-        $approvalUrl = $paypal->renew($this->getUser(), $this->get("paypal")->getApiContext(), $redirectUrls);
+        $approvalUrl = $paypal->renew($this->get("paypal")->getApiContext(), $redirectUrls);
 
         return $this->redirect($approvalUrl);
     }
@@ -142,33 +142,9 @@ class DefaultController extends Controller
      */
     public function paymentCompletingAction(Request $request)
     {
-        if ($request->query->has("success") && $request->query->get("success") == 'true') {
-            $paymentId = $request->query->get("paymentId");
-            $payment = Payment::get($paymentId, $this->get("paypal")->getApiContext());
-            $transaction = $payment->getTransactions()[0];
-
-            $order = new Order();
-            $order->setUser($this->getUser())->setAmount($transaction->getAmount()->getTotal())
-                ->setDone(false)->setUuid($paymentId)->setDone(true);
-
-            $execution = new PaymentExecution();
-            $execution->setPayerId($request->query->get("PayerID"))->addTransaction($transaction);
-            $card = $this->getUser()->getCard();
-            $card->setExpiratedAt($card->getExpiratedAt()->add(new \DateInterval("P2M")));
-
-            $this->getDoctrine()->getManager()->persist($card);
-            $this->getDoctrine()->getManager()->persist($order);
-            $this->getDoctrine()->getManager()->flush();
-
-            try {
-                $this->addFlash("success", "Paiement réussi");
-            } catch (\Exception $ex) {
-                $this->addFlash("danger", "Paiement échoué. Veuillez retenter plus tard");
-            }
-
-        } else {
-            $this->addFlash("warning", "Paiement annulé");
-        }
+        $paypal = new Paypal($this->getDoctrine()->getManager(), $this->getUser());
+        $msg = $paypal->completing($request, $this->get("paypal")->getApiContext());
+        $this->addFlash($msg[0], $msg[1]);
 
         return $this->redirectToRoute("profile");
     }

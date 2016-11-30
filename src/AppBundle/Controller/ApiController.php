@@ -15,6 +15,7 @@ use PayPal\Api\RedirectUrls;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -60,24 +61,28 @@ class ApiController extends Controller
      */
     public function updateCardDateAction($apiKey)
     {
-        $paypal = new Paypal();
+        $paypal = new Paypal($this->getDoctrine()->getManager(), $this->getApi($apiKey)->getUser());
         $baseUrl = $this->generateUrl('api_update_card_confirm', ['apiKey' => $apiKey], UrlGeneratorInterface::ABSOLUTE_URL)."?success";
         $redirectUrls = new RedirectUrls();
         $redirectUrls->setReturnUrl("$baseUrl=true")->setCancelUrl("$baseUrl=false");
-        $approvalUrl = $paypal->renew($this->getUser(), $this->get("paypal")->getApiContext(), $redirectUrls);
+        $approvalUrl = $paypal->renew($this->get("paypal")->getApiContext(), $redirectUrls);
 
         return new JsonResponse(['payment link' => $approvalUrl]);
     }
 
     /**
-     * Return the paypal paiement link
+     * Return the paypal confirmation
      * @Route("/update/card/{apiKey}/confirm", name="api_update_card_confirm")
+     * @param Request $request
      * @param $apiKey
      * @return JsonResponse
      */
-    public function updateCardDateConfirmAction($apiKey)
+    public function updateCardDateConfirmAction(Request $request, $apiKey)
     {
+        $paypal = new Paypal($this->getDoctrine()->getManager(), $this->getApi($apiKey)->getUser());
+        $result = $paypal->completing($request, $this->get("paypal")->getApiContext());
 
+        return new JsonResponse($result);
     }
 
 

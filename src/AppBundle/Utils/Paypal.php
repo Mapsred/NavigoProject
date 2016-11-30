@@ -9,15 +9,19 @@
 namespace AppBundle\Utils;
 
 
+use AppBundle\Entity\Order;
+use Doctrine\Common\Persistence\ObjectManager;
 use PayPal\Api\Amount;
 use PayPal\Api\Details;
 use PayPal\Api\Item;
 use PayPal\Api\ItemList;
 use PayPal\Api\Payer;
 use PayPal\Api\Payment;
+use PayPal\Api\PaymentExecution;
 use PayPal\Api\RedirectUrls;
 use PayPal\Api\Transaction;
 use PayPal\Rest\ApiContext;
+use Symfony\Component\HttpFoundation\Request;
 use UserBundle\Entity\User;
 
 class Paypal
@@ -25,9 +29,26 @@ class Paypal
     /** @var User $user */
     private $user;
 
-    public function renew(User $user, ApiContext $apiContext, RedirectUrls $urls)
+    private $em;
+
+    /**
+     * @param ObjectManager $manager
+     * @param User $user
+     */
+    public function __construct(ObjectManager $manager, User $user)
     {
+        $this->em = $manager;
         $this->user = $user;
+    }
+
+    /**
+     * @param User $user
+     * @param ApiContext $apiContext
+     * @param RedirectUrls $urls
+     * @return null|string
+     */
+    public function renew(ApiContext $apiContext, RedirectUrls $urls)
+    {
         $payer = new Payer();
         $payer->setPaymentMethod("paypal");
 
@@ -57,8 +78,56 @@ class Paypal
         return $payment->getApprovalLink();
     }
 
+    /**
+     * @return User
+     */
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * @param Request $request
+     * @param ApiContext $apiContext
+     * @return array
+     */
+    public function completing(Request $request, ApiContext $apiContext)
+    {
+        if ($request->query->has("success") && $request->query->get("success") == 'true') {
+            $paymentId = $request->query->get("paymentId");
+            $payment = Payment::get($paymentId, $apiContext);
+            $transaction = $payment->getTransactions()[0];
+
+            $order = $this->getManager()->getRepository("AppBundle:Order")->findOneBy(['uuid' => $paymentId]);
+            if ($order) {
+                return ["danger", "Paiement déjà effectué"];
+            }
+
+            $order = new Order();
+            $order->setUser($this->getUser())->setAmount($transaction->getAmount()->getTotal())
+                ->setDone(false)->setUuid($paymentId)->setDone(true);
+
+            $execution = new PaymentExecution();
+            $execution->setPayerId($request->query->get("PayerID"))->addTransaction($transaction);
+            $card = $this->getUser()->getCard();
+            $card->setExpiratedAt($card->getExpiratedAt()->add(new \DateInterval("P2M")));
+
+            $this->getManager()->persist($card);
+            $this->getManager()->persist($order);
+            $this->getManager()->flush();
+
+            return ["success", "Paiement réussi"];
+        } else {
+            return ["warning", "Paiement annulé"];
+        }
+
+    }
+
+    /**
+     * @return ObjectManager
+     */
+    public function getManager()
+    {
+        return $this->em;
     }
 }

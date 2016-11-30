@@ -8,7 +8,6 @@
 
 namespace AppBundle\Utils;
 
-
 use AppBundle\Entity\Order;
 use Doctrine\Common\Persistence\ObjectManager;
 use PayPal\Api\Amount;
@@ -24,11 +23,15 @@ use PayPal\Rest\ApiContext;
 use Symfony\Component\HttpFoundation\Request;
 use UserBundle\Entity\User;
 
+/**
+ * Class Paypal
+ * @package AppBundle\Utils
+ */
 class Paypal
 {
     /** @var User $user */
     private $user;
-
+    /** @var ObjectManager $em */
     private $em;
 
     /**

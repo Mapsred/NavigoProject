@@ -4,17 +4,8 @@ namespace UserBundle\Controller;
 
 require __DIR__.'/../../../vendor/paypal/rest-api-sdk-php/sample/common.php';
 
-use AppBundle\Entity\Order;
 use AppBundle\Utils\Paypal;
-use PayPal\Api\Amount;
-use PayPal\Api\Details;
-use PayPal\Api\Item;
-use PayPal\Api\ItemList;
-use PayPal\Api\Payer;
-use PayPal\Api\Payment;
-use PayPal\Api\PaymentExecution;
 use PayPal\Api\RedirectUrls;
-use PayPal\Api\Transaction;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -148,5 +139,4 @@ class DefaultController extends Controller
 
         return $this->redirectToRoute("profile");
     }
-
 }

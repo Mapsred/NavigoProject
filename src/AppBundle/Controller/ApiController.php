@@ -8,7 +8,6 @@
 
 namespace AppBundle\Controller;
 
-
 use AppBundle\Utils\Api;
 use AppBundle\Utils\Paypal;
 use PayPal\Api\RedirectUrls;

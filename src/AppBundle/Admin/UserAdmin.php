@@ -8,13 +8,16 @@
 
 namespace AppBundle\Admin;
 
-use Sonata\DoctrineORMAdminBundle\Admin\FieldDescription;
 use UserBundle\Entity\User;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 
+/**
+ * Class UserAdmin
+ * @package AppBundle\Admin
+ */
 class UserAdmin extends AbstractAdmin
 {
     /**

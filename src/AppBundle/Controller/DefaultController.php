@@ -7,6 +7,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class DefaultController
+ * @package AppBundle\Controller
+ */
 class DefaultController extends Controller
 {
     /**
@@ -20,7 +24,6 @@ class DefaultController extends Controller
             'base_dir' => realpath($this->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
         ]);
     }
-
 
     /**
      * @Route("/card", name="card_route")

@@ -43,6 +43,8 @@ twig:
     strict_variables: "%kernel.debug%"
     globals:
         admin_skin: skin-blue
+        base_domain: "%base_domain%"
+
     form_themes:
         - bootstrap_3_layout.html.twig
 

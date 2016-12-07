@@ -47,7 +47,7 @@
 {% block body %}{% endblock %}
 <script>
     //Keep for the cookie disclamer on server-menu.js
-    var base_domain = "127.0.0.1";
+    var base_domain = "{{ base_domain }}";
 </script>
 {% if app.request.cookies.get('cookieBanner') is empty %}
     <div class="cookie-disclaimer container">

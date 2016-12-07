@@ -23,3 +23,5 @@ parameters:
     sandbox_secret: 1234abcd
     production_client_id: 1234abcd
     production_secret: 1234abcd
+    base_domain: 127.0.0.1
+

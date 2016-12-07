@@ -98,6 +98,8 @@ sonata_doctrine_orm_admin:
         image: :CRUD:list_image.html.twig
 
 sonata_admin:
+  security:
+        handler: app.security.handler.role
   assets:
     stylesheets:
             - bundles/sonatacore/vendor/bootstrap/dist/css/bootstrap.min.css

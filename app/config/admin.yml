@@ -15,3 +15,6 @@ services:
         tags:
             - { name: sonata.admin, manager_type: orm, label: Cartes, group: "Users" }
 
+  app.security.handler.role:
+      class: Sonata\AdminBundle\Security\Handler\RoleSecurityHandler
+      arguments: ['@security.authorization_checker', ["ROLE_ADMIN"]]

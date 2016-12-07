@@ -22,3 +22,5 @@ npm-debug.log
 /web/css
 /bower_components/
 /web/uploads/
+/phpDocumentor.phar
+/web/docs/
